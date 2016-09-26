@@ -1,6 +1,7 @@
 package com.fsa.en.dron.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +25,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.adapter.GalleryAdapter;
 import com.fsa.en.dron.app.AppController;
@@ -42,6 +45,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
+        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
+        bottomNavigationBar
+                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        bottomNavigationBar.setBarBackgroundColor(R.color.material_light_blue_800);
+        bottomNavigationBar.setActiveColor(R.color.material_grey_900);
+        bottomNavigationBar.setInActiveColor(R.color.material_blue_grey_200);
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.drawable.compose, "Escribime"))
+                .addItem(new BottomNavigationItem(R.drawable.like, "Facebook"))
+                .addItem(new BottomNavigationItem(R.drawable.share, "Cuéntale a un amigo"))
+                .initialise();
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position) {
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+                Intent intent = new Intent(getApplication(), FacebookActivity.class);
+                startActivity(intent);
+            }
+            @Override
+            public void onTabReselected(int position) {
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         LayoutInflater inflator = LayoutInflater.from(this);
