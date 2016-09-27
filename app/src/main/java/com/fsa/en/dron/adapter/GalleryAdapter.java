@@ -20,9 +20,6 @@ import java.util.List;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.model.Image;
 
-/**
- * Created by Lincoln on 31/03/16.
- */
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHolder> {
 

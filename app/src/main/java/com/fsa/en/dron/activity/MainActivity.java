@@ -14,17 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-
+import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-
-import org.json.JSONArray;
+import com.android.volley.VolleyError;import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.fsa.en.dron.R;
@@ -35,7 +31,7 @@ import com.fsa.en.dron.model.Image;
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
-    private static final String endpoint = "http://api.androidhive.info/json/glide.json";
+    private static final String endpoint = "https://api.flickr.com/services/rest/?method=flickr.people.getPhotos&api_key=b5c03d489108e01418d256c898bca5b0&user_id=123786701@N07&format=json&nojsoncallback=1";
     private ArrayList<Image> images;
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
@@ -48,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
-        bottomNavigationBar
-                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar.setBarBackgroundColor(R.color.material_light_blue_800);
         bottomNavigationBar.setActiveColor(R.color.material_grey_900);
         bottomNavigationBar.setInActiveColor(R.color.material_blue_grey_200);
@@ -61,15 +56,40 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {
+                switch (position) {
+                    case 0:
+
+                        break;
+                    case 1:
+                        Intent intent = new Intent(getApplication(), FacebookActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+
+                        break;
+
+                }
             }
 
             @Override
             public void onTabUnselected(int position) {
-                Intent intent = new Intent(getApplication(), FacebookActivity.class);
-                startActivity(intent);
+
             }
             @Override
             public void onTabReselected(int position) {
+                switch (position) {
+                    case 0:
+
+                        break;
+                    case 1:
+                        Intent intent = new Intent(getApplication(), FacebookActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+
+                        break;
+
+                }
             }
         });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -122,25 +142,33 @@ public class MainActivity extends AppCompatActivity {
         pDialog.setMessage("Levantando vuelo...");
         pDialog.show();
 
-        JsonArrayRequest req = new JsonArrayRequest(endpoint,
-                new Response.Listener<JSONArray>() {
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,endpoint,null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         Log.d(TAG, response.toString());
                         pDialog.hide();
+                        JSONArray array = null;
 
+                        try {
+                            JSONObject user = response.getJSONObject("photos");
+                            array = user.getJSONArray("photo");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         images.clear();
-                        for (int i = 0; i < response.length(); i++) {
+                        for (int i = 0; i < array.length(); i++) {
                             try {
-                                JSONObject object = response.getJSONObject(i);
+                                JSONObject object = array.getJSONObject(i);
                                 Image image = new Image();
-                                image.setName(object.getString("name"));
+                                //image.setName(object.getString("name"));
+                                Log.i("objec", "ob" + object.getString("id"));
 
-                                JSONObject url = object.getJSONObject("url");
-                                image.setSmall("https://farm2.staticflickr.com/1619/26444873586_fc066d6cce.jpg");
-                                image.setMedium("https://farm2.staticflickr.com/1619/26444873586_fc066d6cce.jpg");
-                                image.setLarge("https://farm2.staticflickr.com/1619/26444873586_fc066d6cce.jpg");
-                                image.setTimestamp(object.getString("timestamp"));
+                                // JSONObject url = object.getJSONObject("url");
+                                image.setSmall("https://farm2.staticflickr.com/"+object.getString("server")+"/"+object.getString("id")+"_"+object.getString("secret")+".jpg");
+                                image.setMedium("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
+                                image.setLarge("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
+                                image.setUrl("https://farm2.staticflickr.com/"+object.getString("server")+"/"+object.getString("id")+"_"+object.getString("secret")+".jpg");
 
                                 images.add(image);
 

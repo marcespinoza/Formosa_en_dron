@@ -11,17 +11,17 @@ import java.io.Serializable;
 public class Image implements Serializable{
     private String name;
     private String small, medium, large;
-    private String timestamp;
+    private String url;
 
     public Image() {
     }
 
-    public Image(String name, String small, String medium, String large, String timestamp) {
+    public Image(String name, String small, String medium, String large, String url) {
         this.name = name;
         this.small = small;
         this.medium = medium;
         this.large = large;
-        this.timestamp = timestamp;
+        this.url = url;
     }
 
     public String getName() {
@@ -56,11 +56,11 @@ public class Image implements Serializable{
         this.large = large;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getUrl() {
+        return url;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -3,15 +3,20 @@ package com.fsa.en.dron.activity;
 /**
  * Created by Marcelo on 23/09/2016.
  */
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +27,7 @@ import java.util.ArrayList;
 
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.model.Image;
+import com.squareup.picasso.Downloader;
 
 
 public class SlideshowDialogFragment extends DialogFragment {
@@ -31,6 +37,10 @@ public class SlideshowDialogFragment extends DialogFragment {
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle, lblDate;
     private int selectedPosition = 0;
+    private Button descargar;
+    private NotificationManager mNotifyManager;
+    private Builder mBuilder;
+    int id = 1;
 
     static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -42,22 +52,28 @@ public class SlideshowDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
+        descargar = (Button) v.findViewById(R.id.descargar);
+        descargar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                mBuilder = new NotificationCompat.Builder(getActivity());
+                mBuilder.setContentTitle("Download")
+                        .setContentText("Download in progress")
+                        .setSmallIcon(R.drawable.cloud);
+
+                new DownloadImage().execute();
+            }
+        });
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
         lblTitle = (TextView) v.findViewById(R.id.title);
         lblDate = (TextView) v.findViewById(R.id.date);
-
         images = (ArrayList<Image>) getArguments().getSerializable("images");
         selectedPosition = getArguments().getInt("position");
-
-        Log.e(TAG, "position: " + selectedPosition);
-        Log.e(TAG, "images size: " + images.size());
-
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
-
         setCurrentItem(selectedPosition);
-
         return v;
     }
 
@@ -86,17 +102,16 @@ public class SlideshowDialogFragment extends DialogFragment {
     };
 
     private void displayMetaInfo(int position) {
-        lblCount.setText((position + 1) + " of " + images.size());
-
+        lblCount.setText((position + 1) + " de " + images.size());
         Image image = images.get(position);
         lblTitle.setText(image.getName());
-        lblDate.setText(image.getTimestamp());
+        lblDate.setText(image.getUrl());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black);
     }
 
     //  adapter
@@ -144,4 +159,50 @@ public class SlideshowDialogFragment extends DialogFragment {
             container.removeView((View) object);
         }
     }
+
+    private class DownloadImage extends AsyncTask<Void, Integer, Integer> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            // Displays the progress bar for the first time.
+            mBuilder.setProgress(100, 0, false);
+            mNotifyManager.notify(id, mBuilder.build());
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            // Update progress
+            mBuilder.setProgress(100, values[0], false);
+            mNotifyManager.notify(id, mBuilder.build());
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int i;
+            for (i = 0; i <= 100; i += 5) {
+                // Sets the progress indicator completion percentage
+                publishProgress(Math.min(i, 100));
+                try {
+                    // Sleep for 5 seconds
+                    Thread.sleep(2 * 1000);
+                } catch (InterruptedException e) {
+                    Log.d("TAG", "sleep failure");
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            mBuilder.setContentText("Download complete");
+            // Removes the progress bar
+            mBuilder.setProgress(0, 0, false);
+            mNotifyManager.notify(id, mBuilder.build());
+        }
+    }
+
 }
