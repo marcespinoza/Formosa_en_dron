@@ -5,6 +5,9 @@ package com.fsa.en.dron.activity;
  */
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -20,11 +23,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.ShareApi;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.model.Image;
 import com.squareup.picasso.Downloader;
@@ -35,12 +46,16 @@ public class SlideshowDialogFragment extends DialogFragment {
     private ArrayList<Image> images;
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
-    private TextView lblCount, lblTitle, lblDate;
+    private TextView lblCount, lblTitle;
     private int selectedPosition = 0;
-    private Button descargar;
+    private BootstrapButton descargar, compartir;
     private NotificationManager mNotifyManager;
     private Builder mBuilder;
     int id = 1;
+    private ShareButton shareButton;
+    CallbackManager callbackManager;
+    private int counter = 0;
+    ShareDialog shareDialog;
 
     static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -50,16 +65,25 @@ public class SlideshowDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        facebookSDKInitialize();
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        descargar = (Button) v.findViewById(R.id.descargar);
+        compartir = (BootstrapButton) v.findViewById(R.id.compartir);
+        compartir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publishImage();
+            }
+        });
+        descargar = (BootstrapButton) v.findViewById(R.id.descargar);
         descargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                 mBuilder = new NotificationCompat.Builder(getActivity());
-                mBuilder.setContentTitle("Download")
-                        .setContentText("Download in progress")
+                mBuilder.setContentTitle("Descarga")
+                        .setContentText("Descarga en progreso")
                         .setSmallIcon(R.drawable.cloud);
 
                 new DownloadImage().execute();
@@ -67,8 +91,8 @@ public class SlideshowDialogFragment extends DialogFragment {
         });
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
         lblTitle = (TextView) v.findViewById(R.id.title);
-        lblDate = (TextView) v.findViewById(R.id.date);
         images = (ArrayList<Image>) getArguments().getSerializable("images");
+        shareDialog = new ShareDialog(this);
         selectedPosition = getArguments().getInt("position");
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
@@ -105,7 +129,6 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblCount.setText((position + 1) + " de " + images.size());
         Image image = images.get(position);
         lblTitle.setText(image.getName());
-        lblDate.setText(image.getUrl());
     }
 
     @Override
@@ -204,5 +227,30 @@ public class SlideshowDialogFragment extends DialogFragment {
             mNotifyManager.notify(id, mBuilder.build());
         }
     }
+
+    protected void facebookSDKInitialize() {
+
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+
+        callbackManager = CallbackManager.Factory.create();
+    }
+
+    private void publishImage (){
+        Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_launcher);
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+
+        shareDialog.show(content);
+
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);}
 
 }

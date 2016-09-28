@@ -30,6 +30,7 @@ public class FacebookActivity extends AppCompatActivity {
     public TextView nombre_perfil;
     private CallbackManager callbackManager;
     SharedPreferences pref;
+    Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class FacebookActivity extends AppCompatActivity {
         loginButton = (LoginButton)findViewById(R.id.login_button);
         nombre_perfil = (TextView) findViewById(R.id.nombre_perfil);
         callbackManager = CallbackManager.Factory.create();
+        loginButton.setReadPermissions("email,publish_actions");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -52,6 +54,7 @@ public class FacebookActivity extends AppCompatActivity {
                         } else {
                             String name = object.optString("name");
                             nombre_perfil.setText(name);
+                            bundle.putString("jsondata",object.toString());
                             Log.e("datos", "Json Object Data " + object + " Email id " + name);
                             pref = getSharedPreferences("Facebook", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = pref.edit();

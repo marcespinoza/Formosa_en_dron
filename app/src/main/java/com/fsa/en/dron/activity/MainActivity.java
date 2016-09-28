@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetchImages() {
 
         pDialog.setMessage("Levantando vuelo...");
+        pDialog.setCanceledOnTouchOutside(false);
         pDialog.show();
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,endpoint,null,
