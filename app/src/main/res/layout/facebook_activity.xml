@@ -15,8 +15,9 @@
         android:layout_marginTop="80dp"
         app:sparkbutton_activeImage="@drawable/ic_thumb"
         app:sparkbutton_iconSize="80dp"
-        app:sparkbutton_primaryColor="@color/material_grey_900"
-        app:sparkbutton_secondaryColor="@color/material_grey_900" />
+        app:sparkbutton_animationSpeed="1.5"
+        app:sparkbutton_primaryColor="@color/facebook_primary_color"
+        app:sparkbutton_secondaryColor="@color/facebook_secondary_color"  />
 
     <TextView
         android:layout_width="wrap_content"

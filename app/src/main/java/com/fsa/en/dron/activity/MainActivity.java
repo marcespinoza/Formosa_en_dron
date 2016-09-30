@@ -3,6 +3,7 @@ package com.fsa.en.dron.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationBar.setActiveColor(R.color.material_grey_900);
         bottomNavigationBar.setInActiveColor(R.color.material_blue_grey_200);
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.drawable.compose, "Escribime"))
+                .addItem(new BottomNavigationItem(R.drawable.compose, "Mensaje"))
                 .addItem(new BottomNavigationItem(R.drawable.like, "Facebook"))
                 .addItem(new BottomNavigationItem(R.drawable.share, "Cuéntale a un amigo"))
                 .initialise();
@@ -58,14 +59,32 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(int position) {
                 switch (position) {
                     case 0:
-
+                        Intent email = new Intent(Intent.ACTION_SEND);
+                        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"marceloespinoza00@gmail.com"});
+                        email.putExtra(Intent.EXTRA_SUBJECT, "Formosa en dron");
+                        email.putExtra(Intent.EXTRA_TEXT, "Dejá tu mensaje");
+                        email.setType("message/rfc822");
+                        startActivity(Intent.createChooser(email, "Elige un cliente :"));
                         break;
                     case 1:
                         Intent intent = new Intent(getApplication(), FacebookActivity.class);
                         startActivity(intent);
                         break;
                     case 2:
+                        final String my_package_name = "com.fsa.en.dron";
+                        String url = "";
 
+                        try {
+                            //Verifica si play store instalado
+                            getApplication().getPackageManager().getPackageInfo("com.android.vending", 0);
+
+                            url = "market://details?id=" + my_package_name;
+                        } catch ( final Exception e ) {
+                            url = "https://play.google.com/store/apps/details?id=" + my_package_name;
+                        }
+                        final Intent playstore = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        playstore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        startActivity(playstore);
                         break;
 
                 }
@@ -163,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject object = array.getJSONObject(i);
                                 Image image = new Image();
 
-                                image.setSmall("https://farm2.staticflickr.com/"+object.getString("server")+"/"+object.getString("id")+"_"+object.getString("secret")+".jpg");
+                                image.setSmall("https://farm2.staticflickr.com/"+object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
                                 image.setMedium("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
                                 image.setLarge("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
                                 image.setUrl("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");

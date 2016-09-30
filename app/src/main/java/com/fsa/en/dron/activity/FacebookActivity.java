@@ -18,6 +18,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fsa.en.dron.R;
 import com.squareup.picasso.Picasso;
+import com.varunest.sparkbutton.SparkButton;
 
 import org.json.JSONObject;
 
@@ -30,17 +31,22 @@ public class FacebookActivity extends AppCompatActivity {
     public TextView nombre_perfil;
     private CallbackManager callbackManager;
     SharedPreferences pref;
-    Bundle bundle = new Bundle();
+    SparkButton face_button;
+    SharedPreferences sharedPref;
+    AccessToken accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        accessToken = AccessToken.getCurrentAccessToken();
         setContentView(R.layout.facebook_activity);
+        sharedPref = getSharedPreferences("Facebook",Context.MODE_PRIVATE);
+        face_button = (SparkButton) findViewById(R.id.facebook_button);
+        face_button.playAnimation();
         loginButton = (LoginButton)findViewById(R.id.login_button);
         nombre_perfil = (TextView) findViewById(R.id.nombre_perfil);
         callbackManager = CallbackManager.Factory.create();
-        loginButton.setReadPermissions("email,publish_actions");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -53,11 +59,8 @@ public class FacebookActivity extends AppCompatActivity {
                             Log.e("datos", "Error in Response " + response);
                         } else {
                             String name = object.optString("name");
-                            nombre_perfil.setText(name);
-                            bundle.putString("jsondata",object.toString());
                             Log.e("datos", "Json Object Data " + object + " Email id " + name);
-                            pref = getSharedPreferences("Facebook", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = pref.edit();
+                            SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("name", name);
                             editor.commit();
                             Intent intent = new Intent(getApplicationContext(), FacebookActivity.class);
@@ -83,8 +86,14 @@ public class FacebookActivity extends AppCompatActivity {
             }
         });
         loginButton.setReadPermissions("public_profile");
-
+        checkToken();
     }
+    private void checkToken(){
+    if (AccessToken.getCurrentAccessToken() == null) {
+        nombre_perfil.setText("Logueate con tu cuenta");
+    } else {
+        nombre_perfil.setText(sharedPref.getString("name", "Sin datos"));
+    }}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

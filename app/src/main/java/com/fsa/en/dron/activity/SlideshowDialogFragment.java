@@ -7,14 +7,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.NotificationCompat;
@@ -27,6 +32,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.bumptech.glide.Glide;
@@ -80,19 +86,26 @@ public class SlideshowDialogFragment extends DialogFragment {
         compartir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                publishImage();
+                if(isAppInstalled()){
+                publishImage();}else{
+                    Toast.makeText(getActivity().getApplicationContext(), "Aplicación Facebook no encontrada", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
         descargar = (BootstrapButton) v.findViewById(R.id.descargar);
         descargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkLocationPermission();
+                }
                 File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/" + id_imagen + ".jpg");
                 Intent toLaunch = new Intent();
                 toLaunch.setAction(android.content.Intent.ACTION_VIEW);
                 toLaunch.setDataAndType(Uri.fromFile(file), MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpeg"));
                 PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0,
-                       toLaunch, 0);
+                        toLaunch, 0);
                 mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                 mBuilder = new NotificationCompat.Builder(getActivity());
                 mBuilder.setContentTitle("Descargando imagen")
@@ -114,8 +127,51 @@ public class SlideshowDialogFragment extends DialogFragment {
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+
         setCurrentItem(selectedPosition);
         return v;
+    }
+
+    public static final int PERMISSION_REQUEST_CODE = 99;
+
+    public boolean checkLocationPermission() {
+
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                Toast.makeText(getActivity(), "Necesitas proporcionar permisos para almacenar las imagenes, por favor habilita esta opción en configuraciones de tu telefono", Toast.LENGTH_LONG).show();
+
+            } else {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_CODE);
+            }
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                } else {
+                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                }
+                break;
+        }
+    }
+
+    public boolean isAppInstalled() {
+        try {
+            getActivity().getPackageManager().getApplicationInfo("com.facebook.katana", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     private void setCurrentItem(int position) {
@@ -153,7 +209,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_DeviceDefault_NoActionBar);
     }
 
     //  adapter
