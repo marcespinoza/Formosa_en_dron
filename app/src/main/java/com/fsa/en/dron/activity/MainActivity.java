@@ -162,15 +162,13 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 JSONObject object = array.getJSONObject(i);
                                 Image image = new Image();
-                                //image.setName(object.getString("name"));
-                                Log.i("objec", "ob" + object.getString("id"));
 
-                                // JSONObject url = object.getJSONObject("url");
                                 image.setSmall("https://farm2.staticflickr.com/"+object.getString("server")+"/"+object.getString("id")+"_"+object.getString("secret")+".jpg");
                                 image.setMedium("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
                                 image.setLarge("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
-                                image.setUrl("https://farm2.staticflickr.com/"+object.getString("server")+"/"+object.getString("id")+"_"+object.getString("secret")+".jpg");
-
+                                image.setUrl("https://farm2.staticflickr.com/" + object.getString("server") + "/" + object.getString("id") + "_" + object.getString("secret") + ".jpg");
+                                image.setId(object.getString("id"));
+                                Log.i("uuu",""+"https://farm2.staticflickr.com/"+object.getString("server")+"/"+object.getString("id")+"_"+object.getString("secret")+".jpg");
                                 images.add(image);
 
                             } catch (JSONException e) {

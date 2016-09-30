@@ -26,6 +26,9 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
+
+
 }
 
 dependencies {
@@ -41,4 +44,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.beardedhen:androidbootstrap:2.3.0'
+    compile 'com.github.varunest:sparkbutton:1.0.2'
 }

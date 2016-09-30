@@ -4,12 +4,16 @@ package com.fsa.en.dron.activity;
  * Created by Marcelo on 23/09/2016.
  */
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -19,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,18 +32,20 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.facebook.share.ShareApi;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.model.Image;
-import com.squareup.picasso.Downloader;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 
 public class SlideshowDialogFragment extends DialogFragment {
@@ -52,10 +59,10 @@ public class SlideshowDialogFragment extends DialogFragment {
     private NotificationManager mNotifyManager;
     private Builder mBuilder;
     int id = 1;
-    private ShareButton shareButton;
     CallbackManager callbackManager;
-    private int counter = 0;
     ShareDialog shareDialog;
+    String url_descarga = null;
+    String id_imagen = null;
 
     static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -80,13 +87,23 @@ public class SlideshowDialogFragment extends DialogFragment {
         descargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/" + id_imagen + ".jpg");
+                Intent toLaunch = new Intent();
+                toLaunch.setAction(android.content.Intent.ACTION_VIEW);
+                toLaunch.setDataAndType(Uri.fromFile(file), MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpeg"));
+                PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0,
+                       toLaunch, 0);
                 mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                 mBuilder = new NotificationCompat.Builder(getActivity());
-                mBuilder.setContentTitle("Descarga")
-                        .setContentText("Descarga en progreso")
+                mBuilder.setContentTitle("Descargando imagen")
+                        .setContentText("Toca aquí al finalizar..")
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
                         .setSmallIcon(R.drawable.cloud);
 
-                new DownloadImage().execute();
+
+                Picasso.with(getActivity().getApplicationContext()).load(url_descarga).into(target);
+
             }
         });
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
@@ -129,6 +146,8 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblCount.setText((position + 1) + " de " + images.size());
         Image image = images.get(position);
         lblTitle.setText(image.getName());
+        url_descarga = image.getUrl();
+        id_imagen = image.getId();
     }
 
     @Override
@@ -183,55 +202,9 @@ public class SlideshowDialogFragment extends DialogFragment {
         }
     }
 
-    private class DownloadImage extends AsyncTask<Void, Integer, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            // Displays the progress bar for the first time.
-            mBuilder.setProgress(100, 0, false);
-            mNotifyManager.notify(id, mBuilder.build());
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            // Update progress
-            mBuilder.setProgress(100, values[0], false);
-            mNotifyManager.notify(id, mBuilder.build());
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            int i;
-            for (i = 0; i <= 100; i += 5) {
-                // Sets the progress indicator completion percentage
-                publishProgress(Math.min(i, 100));
-                try {
-                    // Sleep for 5 seconds
-                    Thread.sleep(2 * 1000);
-                } catch (InterruptedException e) {
-                    Log.d("TAG", "sleep failure");
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            super.onPostExecute(result);
-            mBuilder.setContentText("Download complete");
-            // Removes the progress bar
-            mBuilder.setProgress(0, 0, false);
-            mNotifyManager.notify(id, mBuilder.build());
-        }
-    }
-
     protected void facebookSDKInitialize() {
 
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
-
         callbackManager = CallbackManager.Factory.create();
     }
 
@@ -247,6 +220,38 @@ public class SlideshowDialogFragment extends DialogFragment {
         shareDialog.show(content);
 
     }
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    File file = new File(
+                            Environment.getExternalStorageDirectory().getAbsolutePath()+ "/" + id_imagen + ".jpg");
+                    try {
+                        file.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                        ostream.close();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            mBuilder.setContentText("Descarga completa");
+            // Removes the progress bar
+            mBuilder.setProgress(0, 0, false);
+            mNotifyManager.notify(id, mBuilder.build());
+        }
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {}
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {mBuilder.setProgress(0, 0, false);
+            mNotifyManager.notify(id, mBuilder.build());}
+    };
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {

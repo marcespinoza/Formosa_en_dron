@@ -12,16 +12,18 @@ public class Image implements Serializable{
     private String name;
     private String small, medium, large;
     private String url;
+    private String id;
 
     public Image() {
     }
 
-    public Image(String name, String small, String medium, String large, String url) {
+    public Image(String name, String small, String medium, String large, String url, String id) {
         this.name = name;
         this.small = small;
         this.medium = medium;
         this.large = large;
         this.url = url;
+        this.id = id;
     }
 
     public String getName() {
@@ -62,5 +64,13 @@ public class Image implements Serializable{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setId(String id){
+        this.id=id;
+    }
+
+    public String getId(){
+        return id;
     }
 }
