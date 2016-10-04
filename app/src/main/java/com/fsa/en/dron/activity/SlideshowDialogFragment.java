@@ -51,6 +51,7 @@ import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.model.Image;
+import com.github.pierry.simpletoast.SimpleToast;
 import com.leo.simplearcloader.ArcConfiguration;
 import com.leo.simplearcloader.SimpleArcDialog;
 import com.leo.simplearcloader.SimpleArcLoader;
@@ -94,7 +95,8 @@ public class SlideshowDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if(isAppInstalled()){
-                prepareImage();}else{
+                prepareImage();}
+                else{
                     Toast.makeText(getActivity().getApplicationContext(), "Aplicación de Facebook no encontrada", Toast.LENGTH_SHORT).show();
 
                 }
@@ -326,6 +328,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                     }
                 }
             }).start();
+            SimpleToast.ok(getActivity(), "Descarga completa", "{fa-check}");
             mBuilder.setContentText("Descarga completa");
             // Removes the progress bar
             mBuilder.setProgress(0, 0, false);
