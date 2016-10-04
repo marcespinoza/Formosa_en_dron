@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -50,6 +51,9 @@ import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.model.Image;
+import com.leo.simplearcloader.ArcConfiguration;
+import com.leo.simplearcloader.SimpleArcDialog;
+import com.leo.simplearcloader.SimpleArcLoader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -69,6 +73,8 @@ public class SlideshowDialogFragment extends DialogFragment {
     ShareDialog shareDialog;
     String url_descarga = null;
     String id_imagen = null;
+    Bitmap image_facebook;
+    SimpleArcDialog mDialog;
 
     static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -82,13 +88,14 @@ public class SlideshowDialogFragment extends DialogFragment {
         facebookSDKInitialize();
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
+        mDialog = new SimpleArcDialog(getActivity());
         compartir = (BootstrapButton) v.findViewById(R.id.compartir);
         compartir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isAppInstalled()){
-                publishImage();}else{
-                    Toast.makeText(getActivity().getApplicationContext(), "Aplicación Facebook no encontrada", Toast.LENGTH_SHORT).show();
+                prepareImage();}else{
+                    Toast.makeText(getActivity().getApplicationContext(), "Aplicación de Facebook no encontrada", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -264,18 +271,41 @@ public class SlideshowDialogFragment extends DialogFragment {
         callbackManager = CallbackManager.Factory.create();
     }
 
-    private void publishImage (){
-        Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_launcher);
-        SharePhoto photo = new SharePhoto.Builder()
-                .setBitmap(image)
-                .build();
-        SharePhotoContent content = new SharePhotoContent.Builder()
-                .addPhoto(photo)
-                .build();
-
-        shareDialog.show(content);
+    private void prepareImage (){
+        Picasso.with(getActivity().getApplicationContext()).load(url_descarga).into(target_share);
 
     }
+
+
+
+    private Target target_share = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            mDialog.dismiss();
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(bitmap)
+                    .build();
+            SharePhotoContent content = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .build();
+
+            shareDialog.show(content);
+        }
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {}
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+             int[] data = new int[1];
+           data[0] = Color.parseColor("#ff039be5");
+            ArcConfiguration configuration = new ArcConfiguration(getActivity());
+            configuration.setLoaderStyle(SimpleArcLoader.STYLE.SIMPLE_ARC);
+            configuration.setText("Preparando imagen..");
+            configuration.setColors(data);
+            mDialog.setConfiguration(configuration);
+            mDialog.show();
+           }
+    };
 
     private Target target = new Target() {
         @Override

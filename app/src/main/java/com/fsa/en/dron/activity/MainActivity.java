@@ -2,6 +2,9 @@ package com.fsa.en.dron.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -86,6 +93,20 @@ public class MainActivity extends AppCompatActivity {
                         playstore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                         startActivity(playstore);
                         break;
+
+                }
+                try {
+                    PackageInfo info = getPackageManager().getPackageInfo(
+                            "Your package name",
+                            PackageManager.GET_SIGNATURES);
+                    for (Signature signature : info.signatures) {
+                        MessageDigest md = MessageDigest.getInstance("SHA");
+                        md.update(signature.toByteArray());
+                        Log.d("Your Tag", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+
+                } catch (NoSuchAlgorithmException e) {
 
                 }
             }

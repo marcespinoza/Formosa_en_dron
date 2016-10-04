@@ -17,8 +17,6 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fsa.en.dron.R;
-import com.squareup.picasso.Picasso;
-import com.varunest.sparkbutton.SparkButton;
 
 import org.json.JSONObject;
 
@@ -30,8 +28,6 @@ public class FacebookActivity extends AppCompatActivity {
     private LoginButton loginButton;
     public TextView nombre_perfil;
     private CallbackManager callbackManager;
-    SharedPreferences pref;
-    SparkButton face_button;
     SharedPreferences sharedPref;
     AccessToken accessToken;
 
@@ -42,8 +38,7 @@ public class FacebookActivity extends AppCompatActivity {
         accessToken = AccessToken.getCurrentAccessToken();
         setContentView(R.layout.facebook_activity);
         sharedPref = getSharedPreferences("Facebook",Context.MODE_PRIVATE);
-        face_button = (SparkButton) findViewById(R.id.facebook_button);
-        face_button.playAnimation();
+
         loginButton = (LoginButton)findViewById(R.id.login_button);
         nombre_perfil = (TextView) findViewById(R.id.nombre_perfil);
         callbackManager = CallbackManager.Factory.create();
