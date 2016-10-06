@@ -1,44 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.FacebookActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="¡Únete!"
+        android:textSize="30dp"
+        android:id="@+id/texto1" />
+
+    <in.championswimmer.libsocialbuttons.fabs.FABFacebook
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:id="@+id/facebook_button"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Bienvenido!!"
-        android:id="@+id/textView" />
+        android:text="facebook.com/formosaendron"
+        android:textSize="10dp"
+        android:textColor="#ff90a4ae"
+        android:id="@+id/texto_face" />
+
+    <com.facebook.share.widget.LikeView
+        android:id="@+id/like_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:background="#ff29b6f6" />
+
+    <in.championswimmer.libsocialbuttons.fabs.FABInstagram
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:id="@+id/instagram_button"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/nombre_perfil" />
+        android:text="instagram/formosa_en_dron"
+        android:textSize="10dp"
+        android:textColor="#ff90a4ae"
+        android:id="@+id/texto_insta" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:background="#ff29b6f6" />
+
+    <in.championswimmer.libsocialbuttons.fabs.FABYoutube
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:id="@+id/youtube_button"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Ya puedes compartir fotos en facebook"
-        android:id="@+id/textView2" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp">
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        />
-
-    </RelativeLayout>
+        android:text="youtube/formosa en dron"
+        android:textSize="10dp"
+        android:textColor="#ff90a4ae"
+        android:id="@+id/texto_youtube" />
 
 </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

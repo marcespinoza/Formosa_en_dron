@@ -95,7 +95,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if(isAppInstalled()){
-                prepareImage();}
+                    prepareImage();}
                 else{
                     Toast.makeText(getActivity().getApplicationContext(), "Aplicación de Facebook no encontrada", Toast.LENGTH_SHORT).show();
 
@@ -298,15 +298,15 @@ public class SlideshowDialogFragment extends DialogFragment {
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
-             int[] data = new int[1];
-           data[0] = Color.parseColor("#ff039be5");
+            int[] data = new int[1];
+            data[0] = Color.parseColor("#ff039be5");
             ArcConfiguration configuration = new ArcConfiguration(getActivity());
             configuration.setLoaderStyle(SimpleArcLoader.STYLE.SIMPLE_ARC);
             configuration.setText("Preparando imagen..");
             configuration.setColors(data);
             mDialog.setConfiguration(configuration);
             mDialog.show();
-           }
+        }
     };
 
     private Target target = new Target() {

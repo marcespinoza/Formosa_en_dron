@@ -35,41 +35,41 @@
             android:textSize="16dp"
             android:textStyle="bold" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="right"
-        android:layout_marginBottom="20dp"
-        android:padding="20dp">
-
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="true"
-            android:text="Descargar"
-            app:bootstrapBrand="primary"
-            app:roundedCorners="true"
-            app:showOutline="true"
-            android:id="@+id/descargar"
-            />
+            android:orientation="horizontal"
+            android:layout_gravity="right"
+            android:layout_marginBottom="20dp"
+            android:padding="20dp">
 
-        <View android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="Descargar"
+                app:bootstrapBrand="primary"
+                app:roundedCorners="true"
+                app:showOutline="true"
+                android:id="@+id/descargar"
+                />
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="true"
-            android:text="Compartir"
-            app:bootstrapBrand="primary"
-            app:roundedCorners="true"
-            app:showOutline="true"
-            android:id="@+id/compartir"
-            />
+            <View android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
-    </LinearLayout>
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:text="Compartir"
+                app:bootstrapBrand="primary"
+                app:roundedCorners="true"
+                app:showOutline="true"
+                android:id="@+id/compartir"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 

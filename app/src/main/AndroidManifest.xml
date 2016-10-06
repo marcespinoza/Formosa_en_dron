@@ -3,7 +3,7 @@
     package="com.fsa.en.dron" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".app.AppController"
@@ -20,12 +20,14 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.fsa.en.dron.activity.FacebookActivity">
-        </activity>
+        <activity android:name="com.fsa.en.dron.activity.FacebookActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <provider android:authorities="com.facebook.app.FacebookContentProvider852575191510970"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"

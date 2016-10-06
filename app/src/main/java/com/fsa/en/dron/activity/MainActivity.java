@@ -2,9 +2,6 @@ package com.fsa.en.dron.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,19 +11,18 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -34,7 +30,9 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.fsa.en.dron.R;
 import com.fsa.en.dron.adapter.GalleryAdapter;
 import com.fsa.en.dron.app.AppController;
+import com.fsa.en.dron.connection.NetworkUtils;
 import com.fsa.en.dron.model.Image;
+import com.github.pierry.simpletoast.SimpleToast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,11 +42,21 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
     private RecyclerView recyclerView;
+    Button button;
+    private MenuItem recargar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        button = (Button) findViewById(R.id.button);
+        button.setVisibility(View.INVISIBLE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkConnection();
+            }
+        });
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
@@ -58,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationBar.setInActiveColor(R.color.material_blue_grey_200);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.compose, "Mensaje"))
-                .addItem(new BottomNavigationItem(R.drawable.like, "Facebook"))
+                .addItem(new BottomNavigationItem(R.drawable.sociales, "Sociales"))
                 .addItem(new BottomNavigationItem(R.drawable.share, "Cuéntale a un amigo"))
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -134,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(v);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                if(id== R.id.recargar){
+                checkConnection();}
+                return false;
+            }
+        });
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.addOnItemTouchListener(new GalleryAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new GalleryAdapter.ClickListener() {
             @Override
@@ -160,7 +177,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-        fetchImages();
+
+    }
+
+    private void checkConnection(){
+        if(NetworkUtils.isConnected(getApplication())){
+            recargar.setVisible(false);
+            fetchImages();
+        } else {
+            SimpleToast.error(getApplicationContext(), "No tienes conexión", "{fa-exclamation-triangle}");
+
+        }
     }
 
     private void fetchImages() {
@@ -215,4 +242,30 @@ public class MainActivity extends AppCompatActivity {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(req);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        recargar = menu.getItem(0);
+        if(NetworkUtils.isConnected(getApplication())){
+            recargar.setVisible(false);
+            fetchImages();}
+        else{
+            recargar.setVisible(true);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.recargar) {
+            checkConnection();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

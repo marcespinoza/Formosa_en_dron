@@ -64,6 +64,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.4.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/customtabs/23.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/design/23.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars" />
@@ -71,9 +73,12 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.volley/volley/1.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.ashokvarma.android/bottom-navigation-bar/1.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.beardedhen/androidbootstrap/2.3.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.13.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.Pierry/SimpleToast/v1.7/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.championswimmer/Android-SocialButtons/1.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.varunest/sparkbutton/1.0.2/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.leo.simplearcloader/simplearcloader/1.0.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.melnykov/floatingactionbutton/1.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaResources" />
@@ -91,22 +96,30 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="design-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="SimpleToast-v1.7" level="project" />
+    <orderEntry type="library" exported="" name="sparkbutton-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="simplearcloader-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
+    <orderEntry type="library" exported="" name="floatingactionbutton-1.3.0" level="project" />
     <orderEntry type="library" exported="" name="androidbootstrap-2.3.0" level="project" />
-    <orderEntry type="library" exported="" name="android-iconify-1.0.9" level="project" />
+    <orderEntry type="library" exported="" name="bolts-tasks-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.4.0" level="project" />
-    <orderEntry type="library" exported="" name="bottom-navigation-bar-1.3.0" level="project" />
-    <orderEntry type="library" exported="" name="volley-1.0.0" level="project" />
-    <orderEntry type="library" exported="" name="facebook-android-sdk-4.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.4.0" level="project" />
-    <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.4.0" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
+    <orderEntry type="library" exported="" name="Android-SocialButtons-1.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.4.0" level="project" />
+    <orderEntry type="library" exported="" name="design-23.4.0" level="project" />
+    <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="facebook-android-sdk-4.13.1" level="project" />
+    <orderEntry type="library" exported="" name="cardview-v7-23.4.0" level="project" />
+    <orderEntry type="library" exported="" name="android-iconify-1.0.9" level="project" />
+    <orderEntry type="library" exported="" name="bottom-navigation-bar-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="volley-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="bolts-applinks-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="customtabs-23.4.0" level="project" />
   </component>
 </module>
