@@ -33,6 +33,7 @@ import com.fsa.en.dron.app.AppController;
 import com.fsa.en.dron.connection.NetworkUtils;
 import com.fsa.en.dron.model.Image;
 import com.github.pierry.simpletoast.SimpleToast;
+import com.marcoscg.easylicensesdialog.EasyLicensesDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -148,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 if(id== R.id.recargar){
                 checkConnection();}
+                if(id== R.id.info){
+                   showDialog();}
                 return false;
             }
         });
@@ -178,6 +181,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+    }
+
+    private void showDialog(){
+        EasyLicensesDialog easyLicensesDialog = new EasyLicensesDialog(this);
+        easyLicensesDialog.setTitle("Acerca de"); //by default EasyLicensesDialog comes without any title.
+        easyLicensesDialog.setCancelable(true); //true or false
+        //easyLicensesDialog.setIcon(R.mipmap.ic_launcher); //add an icon to the title
+        easyLicensesDialog.show();
     }
 
     private void checkConnection(){
@@ -258,14 +269,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.recargar) {
-            checkConnection();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
 }

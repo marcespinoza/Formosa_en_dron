@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/recargar"
         android:title="Recargar"
+        android:icon="@drawable/repeat"
         android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item android:id="@+id/info"
+        android:title=""
+        android:icon="@drawable/info_"
+        android:orderInCategory="101"
         app:showAsAction="always" />
 </menu>

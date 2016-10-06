@@ -49,4 +49,5 @@ dependencies {
     compile 'com.leo.simplearcloader:simplearcloader:1.0.+'
     compile 'com.github.Pierry:SimpleToast:v1.7'
     compile 'com.github.championswimmer:Android-SocialButtons:1.0'
+    compile 'com.github.marcoscgdev.EasyLicensesDialog:standardversion:1.0.4'
 }
