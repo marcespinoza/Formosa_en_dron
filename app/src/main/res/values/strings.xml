@@ -2,4 +2,9 @@
     <string name="app_name">Formosa en dron</string>
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">852575191510970</string>
-</resources>
+    <string name="my_own_title">Califica Formosa en dron</string>
+    <string name="my_own_message">Si disfrutaste de las fotografias, tomate un minuto para dejar tu calificación</string>
+    <string name="my_own_rate">Si, quiero calificar</string>
+    <string name="my_own_thanks">Por ahora no</string>
+    <string name="my_own_cancel">Mas tarde</string>
+    </resources>

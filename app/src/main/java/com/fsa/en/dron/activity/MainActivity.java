@@ -33,9 +33,12 @@ import com.fsa.en.dron.app.AppController;
 import com.fsa.en.dron.connection.NetworkUtils;
 import com.fsa.en.dron.model.Image;
 import com.github.pierry.simpletoast.SimpleToast;
+import com.kobakei.ratethisapp.RateThisApp;
 import com.marcoscg.easylicensesdialog.EasyLicensesDialog;
+import com.sdsmdg.tastytoast.TastyToast;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity  {
 
     private String TAG = MainActivity.class.getSimpleName();
     private static final String endpoint = "https://api.flickr.com/services/rest/?method=flickr.people.getPhotos&api_key=b5c03d489108e01418d256c898bca5b0&user_id=123786701@N07&format=json&nojsoncallback=1";
@@ -50,6 +53,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        RateThisApp.Config config = new RateThisApp.Config(5,10);
+        config.setTitle(R.string.my_own_title);
+        config.setMessage(R.string.my_own_message);
+        config.setYesButtonText(R.string.my_own_rate);
+        config.setNoButtonText(R.string.my_own_thanks);
+        config.setCancelButtonText(R.string.my_own_cancel);
+        RateThisApp.init(config);
+        RateThisApp.setCallback(new RateThisApp.Callback() {
+            @Override
+            public void onYesClicked() {
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity  object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+            }
+
+            @Override
+            public void onNoClicked() {
+                TastyToast.makeText(getApplicationContext(), "Vuelve pronto!", TastyToast.LENGTH_LONG, TastyToast.INFO);
+            }
+
+            @Override
+            public void onCancelClicked() {
+                TastyToast.makeText(getApplicationContext(), "Prometo tomar mejores fotografias!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            }
+        });
         button = (Button) findViewById(R.id.button);
         button.setVisibility(View.INVISIBLE);
         button.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
             recargar.setVisible(false);
             fetchImages();
         } else {
-            SimpleToast.error(getApplicationContext(), "No tienes conexión", "{fa-exclamation-triangle}");
+            TastyToast.makeText(getApplicationContext(), "Parece que no tienes conexión!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
 
         }
     }
@@ -207,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         pDialog.setCanceledOnTouchOutside(false);
         pDialog.show();
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,endpoint,null,
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, endpoint, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -269,6 +300,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Monitor launch times and interval from installation
+        RateThisApp.onStart(this);
+        // Show a dialog if criteria is satisfied
+        RateThisApp.showRateDialogIfNeeded(this);
+    }
 
 }

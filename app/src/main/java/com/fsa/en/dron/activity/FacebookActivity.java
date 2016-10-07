@@ -136,12 +136,7 @@ public class FacebookActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
     }
-    private void checkToken(){
-        if (AccessToken.getCurrentAccessToken() == null) {
 
-        } else {
-
-        }}
 
     public String getFacebookPageURL(Context context) {
         String url = "https://www.facebook.com/Formosaendron";
@@ -167,7 +162,9 @@ public class FacebookActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        Log.i("resuu",""+requestCode+resultCode+data);
+        if(resultCode!=0){
+        callbackManager.onActivityResult(requestCode, resultCode, data);}
     }
 
 }

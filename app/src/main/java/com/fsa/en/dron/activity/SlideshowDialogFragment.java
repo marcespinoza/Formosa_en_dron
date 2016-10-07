@@ -55,6 +55,7 @@ import com.github.pierry.simpletoast.SimpleToast;
 import com.leo.simplearcloader.ArcConfiguration;
 import com.leo.simplearcloader.SimpleArcDialog;
 import com.leo.simplearcloader.SimpleArcLoader;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -328,7 +329,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                     }
                 }
             }).start();
-            SimpleToast.ok(getActivity(), "Descarga completa", "{fa-check}");
+            TastyToast.makeText(getActivity(), "Descarga completa!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
             mBuilder.setContentText("Descarga completa");
             // Removes the progress bar
             mBuilder.setProgress(0, 0, false);
