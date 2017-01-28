@@ -18,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -61,6 +63,7 @@ import com.squareup.picasso.Target;
 
 
 public class SlideshowDialogFragment extends DialogFragment {
+
     private String TAG = SlideshowDialogFragment.class.getSimpleName();
     private ArrayList<Image> images;
     private ViewPager viewPager;
@@ -75,7 +78,6 @@ public class SlideshowDialogFragment extends DialogFragment {
     ShareDialog shareDialog;
     String url_descarga = null;
     String id_imagen = null;
-    Bitmap image_facebook;
     SimpleArcDialog mDialog;
 
     static SlideshowDialogFragment newInstance() {
@@ -137,25 +139,33 @@ public class SlideshowDialogFragment extends DialogFragment {
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
-
         setCurrentItem(selectedPosition);
         return v;
     }
 
-    public static final int PERMISSION_REQUEST_CODE = 99;
+    public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
 
+    //Verifico permisos para escribir y leer del almacenamiento externo
     public boolean checkLocationPermission() {
 
-        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
+                .checkSelfPermission(getActivity(),
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale
+                    (getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale
+                            (getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
                 Toast.makeText(getActivity(), "Necesitas proporcionar permisos para almacenar las imagenes, por favor habilita esta opción en configuraciones de tu telefono", Toast.LENGTH_LONG).show();
 
             } else {
 
-                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_CODE);
+                requestPermissions(
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSIONS_MULTIPLE_REQUEST);
             }
             return false;
         }
@@ -163,13 +173,31 @@ public class SlideshowDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions, @NonNull int[] grantResults) {
+
         switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted, Now you can use local drive .");
-                } else {
-                    Log.e("value", "Permission Denied, You cannot use local drive .");
+            case PERMISSIONS_MULTIPLE_REQUEST:
+                if (grantResults.length > 0) {
+                    boolean writeexternal = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean readexternal = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
+                    if(writeexternal && readexternal)
+                    {
+                        // write your logic here
+                    }
+                }
+                else {
+                    Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            "Por favor otorga permisos para descargar y ver las fotos",
+                            Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    requestPermissions(
+                                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                            PERMISSIONS_MULTIPLE_REQUEST);
+                                }
+                            }).show();
                 }
                 break;
         }
@@ -199,7 +227,6 @@ public class SlideshowDialogFragment extends DialogFragment {
 
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
-
         }
 
         @Override
@@ -278,8 +305,6 @@ public class SlideshowDialogFragment extends DialogFragment {
         Picasso.with(getActivity().getApplicationContext()).load(url_descarga).into(target_share);
 
     }
-
-
 
     private Target target_share = new Target() {
         @Override

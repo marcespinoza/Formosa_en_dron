@@ -118,20 +118,13 @@ public class MainActivity extends AppCompatActivity  {
                         startActivity(intent);
                         break;
                     case 2:
-                        final String my_package_name = "com.fsa.en.dron";
-                        String url = "";
 
-                        try {
-                            //Verifica si play store instalado
-                            getApplication().getPackageManager().getPackageInfo("com.android.vending", 0);
 
-                            url = "market://details?id=" + my_package_name;
-                        } catch ( final Exception e ) {
-                            url = "https://play.google.com/store/apps/details?id=" + my_package_name;
-                        }
-                        final Intent playstore = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        playstore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                        startActivity(playstore);
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Formosa en dron");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.fsa.en.dron");
+                        startActivity(Intent.createChooser(sharingIntent, "Compartir via"));
                         break;
 
                 }
